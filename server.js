@@ -7,7 +7,8 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const pool = require('./db');
-
+const fs = require('fs');
+const path = require('path');
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 
@@ -16,7 +17,7 @@ const PORT = Number(process.env.PORT || 3000);
 // --------------------------------------------------
 
 app.use(cors({
-    origin: 'http://127.0.0.1:5500',
+    origin: process.env.FRONTEND_URL || 'http://127.0.0.1:5500',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -35,18 +36,25 @@ const sessionStore = new MySQLStore({
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME || 'quickbasket_db',
+
+    ssl: process.env.DB_SSL_CA
+        ? { ca: process.env.DB_SSL_CA.replace(/\\n/g, '\n') }
+        : process.env.DB_SSL === 'true'
+            ? { ca: fs.readFileSync(path.join(__dirname, 'certs', 'ca.pem'), 'utf8') }
+            : undefined,
+
     createDatabaseTable: true
 });
-
+app.set('trust proxy', 1);
 app.use(session({
     name: 'quickbasket.sid',
-    secret: process.env.SESSION_SECRET || 'quickbasket-development-secret',
+    secret: process.env.SESSION_SECRET,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000
     }
@@ -93,8 +101,10 @@ function requireLogin(req, res, next) {
 // 4. BASIC TEST ROUTES
 // --------------------------------------------------
 
+app.use(express.static(path.join(__dirname, 'frontend')));
+
 app.get('/', (req, res) => {
-    res.send('QuickBasket backend is running!');
+    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
 app.get('/api/health', (req, res) => {
