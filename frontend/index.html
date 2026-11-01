@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QuickBasket - Grocery Delivery</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5fff5;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #0b8f3c;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #d9ffd9, #ffffff);
+            padding: 50px 20px;
+            border-radius: 15px;
+        }
+
+        .hero h1 {
+            color: #087f35;
+            font-weight: bold;
+        }
+
+        .section {
+            display: none;
+            padding: 30px 10px;
+        }
+
+        .active-section {
+            display: block;
+        }
+
+        .product-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+            height: 100%;
+            background: white;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .product-card .card-body {
+            padding: 15px;
+        }
+
+        .price {
+            color: #078638;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .btn-success {
+            background-color: #0b8f3c;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #066b2c;
+        }
+
+        .category-btn {
+            margin: 5px;
+        }
+
+        .auth-container {
+            max-width: 550px;
+            margin: 30px auto;
+        }
+
+        .auth-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+        }
+
+        .auth-title {
+            color: #087f35;
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 13px;
+            display: block;
+        }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+        }
+
+        .payment-card {
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+            padding: 25px;
+            background: white;
+        }
+
+        .payment-details {
+            display: none;
+        }
+
+        footer {
+            background: #087f35;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#home">QuickBasket 🛒</a>
+
+        <button class="navbar-toggler bg-light" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#home">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#services">Services</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contact</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#cart">
+                        Cart 🛒 (<span id="cartCount">0</span>)
+                    </a>
+                </li>
+                <li class="nav-item" id="ordersNav">
+                    <a class="nav-link" href="#orders">My Orders</a>
+                </li>
+                
+                <li class="nav-item" id="adminNav" style="display: none;">
+                    <a class="nav-link" href="#admin">Admin Dashboard</a>
+                </li>
+
+
+                <li class="nav-item" id="loginNav">
+                    <a class="nav-link" href="#login">Login</a>
+                </li>
+
+                <li class="nav-item" id="signupNav">
+                    <a class="nav-link" href="#signup">Signup</a>
+                </li>
+
+                <li class="nav-item" id="logoutNav">
+                    <a class="nav-link" href="#" onclick="logoutUser()">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="section">
+    <div class="container">
+
+        <div class="hero text-center">
+            <h1>Fresh Groceries Delivered Fast 🚚</h1>
+            <p class="lead">
+                Get fruits, vegetables, dairy products, snacks and more at your doorstep.
+            </p>
+            <a href="#services" class="btn btn-success btn-lg">
+                Start Shopping
+            </a>
+        </div>
+
+        <div id="groceryCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
+
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#groceryCarousel"
+                        data-bs-slide-to="0" class="active"></button>
+
+                <button type="button" data-bs-target="#groceryCarousel"
+                        data-bs-slide-to="1"></button>
+
+                <button type="button" data-bs-target="#groceryCarousel"
+                        data-bs-slide-to="2"></button>
+            </div>
+
+            <div class="carousel-inner rounded">
+
+                <div class="carousel-item active">
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e"
+                         class="d-block w-100"
+                         style="height:500px;object-fit:cover;">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3>Fresh Vegetables</h3>
+                        <p>Healthy food for your family.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf"
+                         class="d-block w-100"
+                         style="height:500px;object-fit:cover;">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3>Fresh Fruits</h3>
+                        <p>Fresh and delicious fruits.</p>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+                        class="d-block w-100"
+                        style="height:500px;object-fit:cover;">
+
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3>Daily Essentials</h3>
+                        <p>Everything you need in one place.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="carousel-control-prev" type="button"
+                    data-bs-target="#groceryCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+
+            <button class="carousel-control-next" type="button"
+                    data-bs-target="#groceryCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+    <div class="container">
+        <h2 class="text-success">About QuickBasket</h2>
+        <p>
+            QuickBasket is a grocery delivery demo website where customers can
+            browse products, add items to cart and place an order using different
+            payment methods.
+        </p>
+    </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="section">
+    <div class="container">
+
+        <h2 class="text-center text-success mb-4">
+            Grocery Products
+        </h2>
+
+        <div class="row mb-3">
+
+            <div class="col-md-5 mb-2">
+                <input type="text" id="searchInput"
+                       class="form-control"
+                       placeholder="Search products..."
+                       onkeyup="displayProducts()">
+            </div>
+
+            <div class="col-md-4 mb-2">
+                <select id="categorySelect"
+                        class="form-select"
+                        onchange="displayProducts()">
+
+                    <option value="All">All Categories</option>
+                    <option value="Fruits">Fruits</option>
+                    <option value="Vegetables">Vegetables</option>
+                    <option value="Dairy">Dairy</option>
+                    <option value="Snacks">Snacks</option>
+                    <option value="Beverages">Beverages</option>
+                    <option value="Bakery">Bakery</option>
+                    <option value="Staples">Staples</option>
+                    <option value="Personal Care">Personal Care</option>
+                    <option value="Household">Household</option>
+
+                </select>
+            </div>
+
+            <div class="col-md-3 mb-2">
+                <select id="sortSelect"
+                        class="form-select"
+                        onchange="displayProducts()">
+
+                    <option value="default">Sort By</option>
+                    <option value="low">Price: Low to High</option>
+                    <option value="high">Price: High to Low</option>
+                    <option value="az">Name: A to Z</option>
+                    <option value="za">Name: Z to A</option>
+
+                </select>
+            </div>
+
+        </div>
+
+        <div class="text-center mb-4">
+            <button class="btn btn-success category-btn"
+                    onclick="selectCategory('All')">
+                All
+            </button>
+
+            <button class="btn btn-outline-success category-btn"
+                    onclick="selectCategory('Fruits')">
+                Fruits
+            </button>
+
+            <button class="btn btn-outline-success category-btn"
+                    onclick="selectCategory('Vegetables')">
+                Vegetables
+            </button>
+
+            <button class="btn btn-outline-success category-btn"
+                    onclick="selectCategory('Dairy')">
+                Dairy
+            </button>
+
+            <button class="btn btn-outline-success category-btn"
+                    onclick="selectCategory('Snacks')">
+                Snacks
+            </button>
+
+            <button class="btn btn-outline-success category-btn"
+                    onclick="selectCategory('Beverages')">
+                Beverages
+            </button>
+
+            <button class="btn btn-outline-success category-btn"
+                    onclick="selectCategory('Bakery')">
+                Bakery
+            </button>
+            <button class="btn btn-outline-success category-btn"
+                    onclick="selectCategory('Staples')">
+                Staples
+            </button>
+
+            <button class="btn btn-outline-success category-btn"
+                    onclick="selectCategory('Personal Care')">
+                Personal Care
+            </button>
+
+            <button class="btn btn-outline-success category-btn"
+                    onclick="selectCategory('Household')">
+                Household
+            </button>
+        </div>
+
+        <div class="row" id="productContainer"></div>
+
+    </div>
+</section>
+
+<!-- SIGNUP -->
+<section id="signup" class="section">
+    <div class="container auth-container">
+
+        <div class="auth-card">
+            <h2 class="text-center auth-title">Create Account</h2>
+            <p class="text-center text-muted">
+                Register to start shopping with QuickBasket
+            </p>
+
+            <form id="signupForm" novalidate>
+
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="signupName"
+                           class="form-control"
+                           placeholder="Enter your full name">
+                    <span id="nameError" class="error-message"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="signupEmail"
+                           class="form-control"
+                           placeholder="Enter your email">
+                    <span id="emailError" class="error-message"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" id="signupPhone"
+                           class="form-control"
+                           maxlength="10"
+                           placeholder="Enter 10 digit phone number">
+                    <span id="phoneError" class="error-message"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="signupPassword"
+                           class="form-control"
+                           placeholder="Enter strong password">
+                    <span id="passwordError" class="error-message"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword"
+                           class="form-control"
+                           placeholder="Confirm password">
+                    <span id="confirmPasswordError"
+                          class="error-message"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" id="terms"
+                           class="form-check-input">
+
+                    <label class="form-check-label">
+                        I agree to the terms and conditions
+                    </label>
+
+                    <span id="termsError" class="error-message"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    Sign Up
+                </button>
+
+                <p class="text-center mt-3">
+                    Already have an account?
+                    <a href="#login">Login</a>
+                </p>
+
+                <p id="signupSuccess"
+                   class="success-message text-center"></p>
+
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<!-- LOGIN -->
+<section id="login" class="section">
+    <div class="container auth-container">
+
+        <div class="auth-card">
+            <h2 class="text-center auth-title">Welcome Back</h2>
+            <p class="text-center text-muted">
+                Login to your QuickBasket account
+            </p>
+
+            <form id="loginForm" novalidate>
+
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="loginEmail"
+                           class="form-control"
+                           placeholder="Enter your email">
+                    <span id="loginEmailError"
+                          class="error-message"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="loginPassword"
+                           class="form-control"
+                           placeholder="Enter your password">
+                    <span id="loginPasswordError"
+                          class="error-message"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">
+                    Login
+                </button>
+
+                <p class="text-center mt-3">
+                    New user?
+                    <a href="#signup">Create Account</a>
+                </p>
+
+                <p id="loginError"
+                   class="error-message text-center"></p>
+
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<!-- CART -->
+<section id="cart" class="section">
+    <div class="container">
+
+        <h2 class="text-center text-success mb-4">
+            Your Shopping Cart
+        </h2>
+
+        <div id="cartItems"></div>
+
+        <div class="text-end mt-3">
+            <h3>
+                Total:
+                ₹<span id="cartTotal">0</span>
+            </h3>
+
+            <button class="btn btn-success"
+                    onclick="checkout()">
+                Proceed to Checkout
+            </button>
+        </div>
+
+    </div>
+</section>
+
+<section id="orders" class="section">
+    <div class="container">
+
+        <h2 class="text-center text-success mb-4">
+            My Orders
+        </h2>
+
+        <div id="ordersContainer">
+
+            <p class="text-center">
+                Loading your orders...
+            </p>
+
+        </div>
+
+    </div>
+</section>
+<!-- Admin Dashboard -->
+<section id="admin" class="section">
+    <div class="container">
+        <h2 class="text-center text-success mb-4">
+            Admin Dashboard
+        </h2>
+
+        <div class="row text-center mb-4">
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h5>Total Products</h5>
+                    <h2 id="totalProducts">0</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h5>Total Orders</h5>
+                    <h2 id="totalOrders">0</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <h5>Admin Status</h5>
+                    <h2 class="text-success">Active</h2>
+                </div>
+            </div>
+        </div>
+
+        <h4 class="mb-3">Add New Product</h4>
+
+        <div class="card p-4 mb-4">
+
+            <form id="addProductForm">
+
+                <div class="mb-3">
+                    <label class="form-label">Product Name</label>
+                    <input type="text" id="productName"
+                            class="form-control" required
+                            maxlength="150">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <input type="text" id="productCategory"
+                        class="form-control" required
+                        maxlength="60">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Price (₹)</label>
+                    <input type="number" id="productPrice"
+                        class="form-control" required
+                        min="0.01" step="0.01">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Image URL</label>
+                    <input type="url" id="productImage"
+                        class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Stock Quantity</label>
+                    <input type="number" id="productStock"
+                        class="form-control" required
+                        min="0" step="1">
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    Add Product
+                </button>
+
+            </form>
+
+            <div id="productMessage" class="mt-3"></div>
+
+        </div>
+        <hr class="my-4">
+
+        <h4 class="mb-3">All Products</h4>
+
+        <div id="adminProductsContainer">
+            <p>Loading products...</p>
+        </div>
+        <!-- Edit Product Form -->
+<div id="editProductContainer" class="card p-4 mt-4"
+     style="display: none;">
+
+    <h4>Edit Product</h4>
+
+    <form id="editProductForm">
+
+        <input type="hidden" id="editProductId">
+
+        <div class="mb-3">
+            <label class="form-label">Product Name</label>
+            <input type="text" id="editProductName"
+                   class="form-control" required maxlength="150">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Category</label>
+            <input type="text" id="editProductCategory"
+                   class="form-control" required maxlength="60">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Price (₹)</label>
+            <input type="number" id="editProductPrice"
+                   class="form-control" required min="0.01" step="0.01">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Image URL</label>
+            <input type="url" id="editProductImage"
+                   class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Stock Quantity</label>
+            <input type="number" id="editProductStock"
+                   class="form-control" required min="0" step="1">
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Save Changes
+        </button>
+
+        <button type="button" class="btn btn-secondary"
+                onclick="cancelEditProduct()">
+            Cancel
+        </button>
+
+    </form>
+
+    <div id="editProductMessage" class="mt-3"></div>
+</div>
+
+        <h4>Order Management</h4>
+        <p>Order management tools will appear here.</p>
+    </div>
+</section>
+
+
+<!-- PAYMENT -->
+<section id="payment" class="section">
+    <div class="container">
+
+        <h2 class="text-center text-success mb-4">
+            Checkout and Payment
+        </h2>
+
+        <div class="row">
+
+            <div class="col-md-7 mb-4">
+
+                <div class="payment-card">
+                    <h4 class="text-success mb-3">
+                        Delivery Details
+                    </h4>
+
+                    <form id="paymentForm" novalidate>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Phone Number
+                            </label>
+
+                            <input type="text"
+                                   id="deliveryPhone"
+                                   class="form-control"
+                                   maxlength="10"
+                                   placeholder="Enter 10 digit phone number">
+
+                            <span id="deliveryPhoneError"
+                                  class="error-message"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Delivery Address
+                            </label>
+
+                            <textarea id="deliveryAddress"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Enter complete delivery address"></textarea>
+
+                            <span id="deliveryAddressError"
+                                  class="error-message"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Payment Method
+                            </label>
+
+                            <select id="paymentMethod"
+                                    class="form-select"
+                                    onchange="showPaymentFields()">
+
+                                <option value="">
+                                    Select Payment Method
+                                </option>
+
+                                <option value="upi">
+                                    UPI Apps
+                                </option>
+
+                                <option value="netbanking">
+                                    Net Banking
+                                </option>
+
+                                <option value="card">
+                                    Debit / Credit Card
+                                </option>
+
+                                <option value="cod">
+                                    Cash on Delivery
+                                </option>
+
+                            </select>
+
+                            <span id="paymentMethodError"
+                                  class="error-message"></span>
+                        </div>
+
+                        <!-- UPI DETAILS -->
+                        <div id="upiFields"
+                             class="payment-details">
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Select UPI App
+                                </label>
+
+                                <select id="upiApp"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Select UPI App
+                                    </option>
+
+                                    <option value="Google Pay">
+                                        Google Pay
+                                    </option>
+
+                                    <option value="PhonePe">
+                                        PhonePe
+                                    </option>
+
+                                    <option value="Paytm">
+                                        Paytm
+                                    </option>
+
+                                    <option value="BHIM">
+                                        BHIM
+                                    </option>
+
+                                </select>
+
+                                <span id="upiAppError"
+                                      class="error-message"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    UPI ID
+                                </label>
+
+                                <input type="text"
+                                       id="upiId"
+                                       class="form-control"
+                                       placeholder="example@upi">
+
+                                <span id="upiIdError"
+                                      class="error-message"></span>
+                            </div>
+
+                        </div>
+
+                        <!-- NET BANKING DETAILS -->
+                        <div id="netbankingFields"
+                             class="payment-details">
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Select Bank
+                                </label>
+
+                                <select id="bankName"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Select Bank
+                                    </option>
+
+                                    <option value="SBI">
+                                        State Bank of India
+                                    </option>
+
+                                    <option value="HDFC">
+                                        HDFC Bank
+                                    </option>
+
+                                    <option value="ICICI">
+                                        ICICI Bank
+                                    </option>
+
+                                    <option value="Axis">
+                                        Axis Bank
+                                    </option>
+
+                                    <option value="Canara">
+                                        Canara Bank
+                                    </option>
+
+                                </select>
+
+                                <span id="bankNameError"
+                                      class="error-message"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Customer ID
+                                </label>
+
+                                <input type="text"
+                                       id="customerId"
+                                       class="form-control"
+                                       placeholder="Enter demo customer ID">
+
+                                <span id="customerIdError"
+                                      class="error-message"></span>
+                            </div>
+
+                        </div>
+
+                        <!-- CARD DETAILS -->
+                        <div id="cardFields"
+                             class="payment-details">
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Card Holder Name
+                                </label>
+
+                                <input type="text"
+                                       id="cardHolder"
+                                       class="form-control"
+                                       placeholder="Enter card holder name">
+
+                                <span id="cardHolderError"
+                                      class="error-message"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Card Number
+                                </label>
+
+                                <input type="text"
+                                       id="cardNumber"
+                                       class="form-control"
+                                       maxlength="16"
+                                       placeholder="Enter 16 digit demo card number">
+
+                                <span id="cardNumberError"
+                                      class="error-message"></span>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        Expiry Date
+                                    </label>
+
+                                    <input type="text"
+                                           id="expiryDate"
+                                           class="form-control"
+                                           placeholder="MM/YY">
+
+                                    <span id="expiryDateError"
+                                          class="error-message"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        CVV
+                                    </label>
+
+                                    <input type="password"
+                                           id="cvv"
+                                           class="form-control"
+                                           maxlength="3"
+                                           placeholder="CVV">
+
+                                    <span id="cvvError"
+                                          class="error-message"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- COD DETAILS -->
+                        <div id="codFields"
+                             class="payment-details alert alert-success">
+
+                            <strong>Cash on Delivery selected.</strong>
+                            <br>
+                            You can pay when your order is delivered.
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-success w-100 mt-3">
+                            Place Order
+                        </button>
+
+                        <p id="paymentSuccess"
+                           class="success-message text-center mt-3"></p>
+
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="col-md-5">
+
+                <div class="payment-card">
+                    <h4 class="text-success">
+                        Order Summary
+                    </h4>
+
+                    <hr>
+
+                    <div id="paymentSummary"></div>
+
+                    <hr>
+
+                    <h4>
+                        Total:
+                        ₹<span id="paymentTotal">0</span>
+                    </h4>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section">
+    <div class="container">
+
+        <h2 class="text-success">Contact Us</h2>
+
+        <form onsubmit="submitContact(event)" class="mt-3">
+
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" id="contactName"
+                       class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" id="contactEmail"
+                       class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Message</label>
+                <textarea id="contactMessage"
+                          class="form-control"
+                          required></textarea>
+            </div>
+
+            <button class="btn btn-success">
+                Submit
+            </button>
+
+        </form>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="text-center">
+    <p class="mb-0">
+        © 2026 QuickBasket. All Rights Reserved.
+    </p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    // PRODUCT DATA - 10 PRODUCTS IN EACH CATEGORY
+
+
+    let products = [];
+    let cart = JSON.parse(localStorage.getItem("quickBasketCart")) || [];
+    let productsLoaded = false;
+
+    function saveCart() {
+    localStorage.setItem("quickBasketCart", JSON.stringify(cart));
+    }
+    
+
+    
+function displayProducts() {
+    const container = document.getElementById("productContainer");
+
+    if (!container) return;
+
+    if (!productsLoaded) {
+        container.innerHTML = `
+            <div class="col-12 text-center py-4">
+                <div class="spinner-border text-success"></div>
+                <p class="mt-2">Loading fresh products...</p>
+            </div>`;
+        return;
+    }
+
+    const searchValue =
+        document.getElementById("searchInput").value.trim().toLowerCase();
+
+    const category =
+        document.getElementById("categorySelect").value;
+
+    const sort =
+        document.getElementById("sortSelect").value;
+
+    let filteredProducts = products.filter(product => {
+        const matchesSearch =
+            product.name.toLowerCase().includes(searchValue);
+
+        const matchesCategory =
+            category === "All" || product.category === category;
+
+        return matchesSearch && matchesCategory;
+    });
+
+    if (sort === "low") {
+        filteredProducts.sort((a, b) => a.price - b.price);
+    } else if (sort === "high") {
+        filteredProducts.sort((a, b) => b.price - a.price);
+    } else if (sort === "az") {
+        filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sort === "za") {
+        filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    if (filteredProducts.length === 0) {
+        container.innerHTML = `
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No products found. Try another search or category.
+                </div>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = filteredProducts.map(product => `
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card product-card">
+                <img
+                    src="${escapeHtml(product.image_url || "")}"
+                    alt="${escapeHtml(product.name)}"
+                    loading="lazy"
+                    onerror="this.onerror=null;this.src='https://placehold.co/400x250?text=Grocery'">
+
+                <div class="card-body">
+                    <h5 class="card-title">
+                        ${escapeHtml(product.name)}
+                    </h5>
+
+                    <p class="text-muted">
+                        ${escapeHtml(product.category)}
+                    </p>
+
+                    <p class="price">
+                        ₹${Number(product.price).toFixed(2)}
+                    </p>
+
+                    <p class="small text-muted">
+                        ${Number(product.stock) > 0
+                            ? "In stock"
+                            : "Out of stock"}
+                    </p>
+
+                    <button
+                        class="btn btn-success w-100"
+                        ${Number(product.stock) <= 0 ? "disabled" : ""}
+                        onclick="addToCart(${Number(product.id)})">
+                        ${Number(product.stock) > 0
+                            ? "Add to Cart"
+                            : "Out of Stock"}
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join("");
+}
+
+async function loadMyOrders() {
+
+    const container = document.getElementById("ordersContainer");
+
+    container.innerHTML = "<p class='text-center'>Loading orders...</p>";
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:3000/api/orders",
+            {
+                credentials: "include"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Unable to load orders.");
+        }
+
+        if (data.orders.length === 0) {
+            container.innerHTML = `
+                <h5 class="text-center text-muted">
+                    You haven't placed any orders yet.
+                </h5>
+            `;
+            return;
+        }
+
+        container.innerHTML = "";
+
+        data.orders.forEach(order => {
+
+            let itemsHTML = "";
+
+            order.items.forEach(item => {
+                itemsHTML += `
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>${item.name} × ${item.quantity}</span>
+                        <span>₹${Number(item.unit_price) * item.quantity}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML += `
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between flex-wrap">
+                            <h5 class="text-success">
+                                Order #${order.id}
+                            </h5>
+
+                            <span class="badge bg-success">
+                                ${order.order_status}
+                            </span>
+                        </div>
+
+                        <hr>
+
+                        <h6>Items</h6>
+
+                        ${itemsHTML}
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+                            <strong>Total Amount</strong>
+                            <strong>₹${Number(order.total_amount).toFixed(2)}</strong>
+                        </div>
+
+                        <p class="mt-2 mb-0">
+                            Payment: ${order.payment_method}
+                        </p>
+
+                        <p class="mb-0">
+                            Payment Status: ${order.payment_status}
+                        </p>
+
+                        <p class="text-muted mt-2 mb-0">
+                            Order Date: ${new Date(order.created_at).toLocaleString()}
+                        </p>
+
+                    </div>
+                </div>
+            `;
+
+        });
+
+    } catch (error) {
+
+        container.innerHTML = `
+            <p class="text-center text-danger">
+                ${error.message}
+            </p>
+        `;
+
+        console.error("My Orders Error:", error);
+
+    }
+}
+
+
+// Escape database values before inserting them into HTML.
+function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+// Fetch products from the Express API.
+async function loadProducts() {
+    const container = document.getElementById("productContainer");
+
+    try {
+        const response = await fetch(`${API_BASE}/products`);
+
+        if (!response.ok) {
+            throw new Error(`Server returned HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success || !Array.isArray(data.products)) {
+            throw new Error("Invalid product API response");
+        }
+
+        products = data.products.map(product => ({
+            ...product,
+            id: Number(product.id),
+            price: Number(product.price),
+            stock: Number(product.stock)
+        }));
+
+        productsLoaded = true;
+        displayProducts();
+
+    } catch (error) {
+        console.error("Product loading failed:", error);
+
+        if (container) {
+            container.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        Could not load products. Make sure the QuickBasket
+                        backend is running at localhost:3000, then refresh.
+                    </div>
+                    <button class="btn btn-success"
+                            onclick="loadProducts()">
+                        Retry
+                    </button>
+                </div>`;
+        }
+    }
+}
+
+    function selectCategory(category) {
+    document.getElementById("categorySelect").value = category;
+
+    document.querySelectorAll(".category-btn").forEach(button => {
+        button.classList.remove("btn-success");
+        button.classList.add("btn-outline-success");
+    });
+
+    const selectedButton = [...document.querySelectorAll(".category-btn")]
+        .find(button =>
+            button.getAttribute("onclick") === `selectCategory('${category}')`
+        );
+
+    if (selectedButton) {
+        selectedButton.classList.remove("btn-outline-success");
+        selectedButton.classList.add("btn-success");
+    }
+
+    displayProducts();
+}
+    // CART FUNCTIONS
+
+   
+    function addToCart(productId) {
+        if (typeof window.isLoggedIn !== "function" || !window.isLoggedIn()) {
+        alert("Please login to add products to your cart.");
+        return;
+    }
+    const product = products.find(
+        item => item.id === Number(productId)
+    );
+
+    if (!product) {
+        alert("Product not found. Please refresh the catalogue.");
+        return;
+    }
+
+    const existingProduct = cart.find(
+        item => item.id === product.id
+    );
+
+    if (existingProduct) {
+        if (existingProduct.quantity >= product.stock) {
+            alert("You cannot add more than the available stock.");
+            return;
+        }
+
+        existingProduct.quantity++;
+    } else {
+        if (product.stock <= 0) {
+            alert("Sorry, this product is out of stock.");
+            return;
+        }
+
+        cart.push({
+            ...product,
+            quantity: 1
+        });
+    }
+
+    saveCart();
+    updateCartCount();
+    displayCart();
+
+    alert(product.name + " added to cart!");
+}
+    
+    function changeCartQuantity(productId, change) {
+    const item = cart.find(
+        product => product.id === Number(productId)
+    );
+
+    if (!item) return;
+
+    if (change > 0 && item.quantity >= item.stock) {
+        alert("Maximum available stock reached.");
+        return;
+    }
+
+    item.quantity += change;
+
+    if (item.quantity <= 0) {
+        cart = cart.filter(
+            product => product.id !== Number(productId)
+        );
+    }
+
+    saveCart();
+    updateCartCount();
+    displayCart();
+}
+
+
+    function updateCartCount() {
+    const count = cart.reduce(
+        (total, item) => total + Number(item.quantity),
+        0
+    );
+
+    const cartCount = document.getElementById("cartCount");
+
+    if (cartCount) {
+        cartCount.innerText = count;
+    }
+}
+
+    function displayCart() {
+    const cartItems = document.getElementById("cartItems");
+    const cartTotal = document.getElementById("cartTotal");
+
+    if (!cartItems || !cartTotal) return;
+
+    cartItems.innerHTML = "";
+
+    if (cart.length === 0) {
+        cartItems.innerHTML = `
+            <div class="alert alert-warning">
+                Your cart is empty.
+            </div>
+        `;
+
+        cartTotal.innerText = "0.00";
+        return;
+    }
+
+    let total = 0;
+
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        cartItems.innerHTML += `
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+
+                        <div class="col-md-3">
+                            <h5>${escapeHtml(item.name)}</h5>
+                            <p class="text-muted">
+                                ${escapeHtml(item.category)}
+                            </p>
+                        </div>
+
+                        <div class="col-md-2">
+                            ₹${Number(item.price).toFixed(2)}
+                        </div>
+
+                        <div class="col-md-3">
+                            <button class="btn btn-outline-success btn-sm"
+                                onclick="changeCartQuantity(${Number(item.id)}, -1)">
+                                -
+                            </button>
+
+                            <span class="mx-2">
+                                ${Number(item.quantity)}
+                            </span>
+
+                            <button class="btn btn-outline-success btn-sm"
+                                onclick="changeCartQuantity(${Number(item.id)}, 1)">
+                                +
+                            </button>
+                        </div>
+
+                        <div class="col-md-2">
+                            <strong>
+                                ₹${itemTotal.toFixed(2)}
+                            </strong>
+                        </div>
+
+                        <div class="col-md-2">
+                            <button class="btn btn-danger btn-sm"
+                                onclick="removeFromCart(${Number(item.id)})">
+                                Remove
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    cartTotal.innerText = total.toFixed(2);
+}
+    function removeFromCart(productId) {
+    cart = cart.filter(
+        item => item.id !== Number(productId)
+    );
+
+    saveCart();
+    updateCartCount();
+    displayCart();
+}
+
+    function calculateTotal() {
+
+        return cart.reduce((total, item) =>
+            total + item.price * item.quantity, 0
+        );
+    }
+
+    
+function checkout() {
+
+    if (!window.isLoggedIn()) {
+        alert("Please login to proceed with checkout.");
+        window.location.hash = "login";
+        return;
+    }
+
+    if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    window.location.hash = "payment";
+
+    displayPaymentSummary();
+}
+
+    // PAYMENT SUMMARY
+
+    function displayPaymentSummary() {
+
+        const summary = document.getElementById("paymentSummary");
+
+        summary.innerHTML = "";
+
+        cart.forEach(item => {
+
+            summary.innerHTML += `
+                <div class="d-flex justify-content-between mb-2">
+                    <span>
+                        ${item.name} x ${item.quantity}
+                    </span>
+
+                    <span>
+                        ₹${item.price * item.quantity}
+                    </span>
+                </div>
+            `;
+        });
+
+        document.getElementById("paymentTotal").innerText =
+            calculateTotal();
+    }
+
+    // PAYMENT FIELD DISPLAY
+
+    function showPaymentFields() {
+
+        const method =
+            document.getElementById("paymentMethod").value;
+
+        document.getElementById("upiFields").style.display = "none";
+        document.getElementById("netbankingFields").style.display = "none";
+        document.getElementById("cardFields").style.display = "none";
+        document.getElementById("codFields").style.display = "none";
+
+        if (method === "upi") {
+            document.getElementById("upiFields").style.display = "block";
+        }
+
+        if (method === "netbanking") {
+            document.getElementById("netbankingFields").style.display = "block";
+        }
+
+        if (method === "card") {
+            document.getElementById("cardFields").style.display = "block";
+        }
+
+        if (method === "cod") {
+            document.getElementById("codFields").style.display = "block";
+        }
+    }
+
+    // CLEAR PAYMENT ERRORS
+
+    function clearPaymentErrors() {
+
+        const errors = document.querySelectorAll(
+            "#paymentForm .error-message"
+        );
+
+        errors.forEach(error => {
+            error.innerText = "";
+        });
+
+        document.getElementById("paymentSuccess").innerText = "";
+    }
+
+    // PAYMENT VALIDATION
+
+    
+document.getElementById("paymentForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        clearPaymentErrors();
+
+        let valid = true;
+
+        const phone =
+            document.getElementById("deliveryPhone").value.trim();
+
+        const address =
+            document.getElementById("deliveryAddress").value.trim();
+
+        const method =
+            document.getElementById("paymentMethod").value;
+
+        const phonePattern = /^[6-9]\d{9}$/;
+
+        if (!phonePattern.test(phone)) {
+            document.getElementById("deliveryPhoneError").innerText =
+                "Enter a valid 10 digit phone number.";
+            valid = false;
+        }
+
+        if (address.length < 10) {
+            document.getElementById("deliveryAddressError").innerText =
+                "Please enter a complete delivery address.";
+            valid = false;
+        }
+
+        if (method === "") {
+            document.getElementById("paymentMethodError").innerText =
+                "Please select a payment method.";
+            valid = false;
+        }
+
+        if (method === "upi") {
+
+            const app = document.getElementById("upiApp").value;
+            const upiId = document.getElementById("upiId").value.trim();
+            const upiPattern = /^[\w.-]+@[\w.-]+$/;
+
+            if (app === "") {
+                document.getElementById("upiAppError").innerText =
+                    "Please select a UPI app.";
+                valid = false;
+            }
+
+            if (!upiPattern.test(upiId)) {
+                document.getElementById("upiIdError").innerText =
+                    "Enter a valid demo UPI ID.";
+                valid = false;
+            }
+        }
+
+        if (method === "netbanking") {
+
+            const bank = document.getElementById("bankName").value;
+            const customerId =
+                document.getElementById("customerId").value.trim();
+
+            if (bank === "") {
+                document.getElementById("bankNameError").innerText =
+                    "Please select your bank.";
+                valid = false;
+            }
+
+            if (customerId.length < 3) {
+                document.getElementById("customerIdError").innerText =
+                    "Enter a valid demo customer ID.";
+                valid = false;
+            }
+        }
+
+        if (method === "card") {
+
+            const cardHolder =
+                document.getElementById("cardHolder").value.trim();
+
+            const cardNumber =
+                document.getElementById("cardNumber").value.trim();
+
+            const expiry =
+                document.getElementById("expiryDate").value.trim();
+
+            const cvv =
+                document.getElementById("cvv").value.trim();
+
+            if (cardHolder.length < 3) {
+                document.getElementById("cardHolderError").innerText =
+                    "Enter card holder name.";
+                valid = false;
+            }
+
+            if (!/^\d{16}$/.test(cardNumber)) {
+                document.getElementById("cardNumberError").innerText =
+                    "Enter a 16 digit demo card number.";
+                valid = false;
+            }
+
+            if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
+                document.getElementById("expiryDateError").innerText =
+                    "Enter expiry in MM/YY format.";
+                valid = false;
+            }
+
+            if (!/^\d{3}$/.test(cvv)) {
+                document.getElementById("cvvError").innerText =
+                    "Enter a 3 digit demo CVV.";
+                valid = false;
+            }
+        }
+
+        if (!valid) {
+            return;
+        }
+
+        const submitButton =
+            document.querySelector("#paymentForm button[type='submit']");
+
+        const successMessage =
+            document.getElementById("paymentSuccess");
+
+        try {
+
+            submitButton.disabled = true;
+            submitButton.innerText = "Placing Order...";
+
+            successMessage.innerText = "";
+
+            const response = await fetch(
+                "http://127.0.0.1:3000/api/orders",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    credentials: "include",
+
+                    body: JSON.stringify({
+
+                        items: cart.map(item => ({
+                            id: Number(item.id),
+                            quantity: Number(item.quantity)
+                        })),
+
+                        deliveryPhone: phone,
+                        deliveryAddress: address,
+                        paymentMethod: method
+
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message || "Unable to place your order."
+                );
+            }
+
+            successMessage.innerText =
+                "Order placed successfully! Order ID: " + data.orderId;
+
+            alert(
+                "Order placed successfully!\n" +
+                "Order ID: " + data.orderId +
+                "\nTotal Amount: ₹" + data.totalAmount
+            );
+
+            // Clear cart only after successful database order creation
+            cart = [];
+
+            saveCart();
+            updateCartCount();
+            displayCart();
+
+            document.getElementById("paymentForm").reset();
+
+            showPaymentFields();
+
+            setTimeout(function() {
+                window.location.hash = "home";
+            }, 1500);
+
+        } catch (error) {
+
+            successMessage.innerText =
+                "Order failed: " + error.message;
+
+            console.error("Order error:", error);
+
+        } finally {
+
+            submitButton.disabled = false;
+            submitButton.innerText = "Place Order";
+
+        }
+
+    }
+);
+    // ROUTER
+
+    function router() {
+
+        let page =
+            window.location.hash.substring(1);
+
+        if (page === "") {
+
+            if (isLoggedIn()) {
+                page = "home";
+            } else {
+                page = "login";
+            }
+
+            window.location.hash = page;
+        }
+
+        const protectedPages = [
+            "home",
+            "about",
+            "services",
+            "contact",
+            "cart",
+            "payment",
+            "orders"
+        ];
+
+        if (protectedPages.includes(page) && !isLoggedIn()) {
+
+            window.location.hash = "login";
+
+            return;
+        }
+        // Admin page protection
+        if (page === "admin") {
+            if (!isLoggedIn()) {
+                window.location.hash = "login";
+                return;
+            }
+
+            if (currentUser.role !== "admin") {
+                alert("Access denied! Admins only.");
+                window.location.hash = "home";
+                return;
+            }
+        }
+
+        document.querySelectorAll(".section").forEach(section => {
+            section.classList.remove("active-section");
+        });
+
+        const currentSection =
+            document.getElementById(page);
+
+        if (currentSection) {
+            currentSection.classList.add("active-section");
+        } else {
+            document.getElementById("login")
+                .classList.add("active-section");
+        }
+
+        if (page === "services" ||page === "home") {
+            displayProducts();
+        }
+
+        if (page === "cart") {
+            displayCart();
+        }
+
+        if (page === "payment") {
+            displayPaymentSummary();
+        }
+        if (page === "orders") {
+            loadMyOrders();
+        }
+        if (page === "admin")
+            loadAdminProducts();
+            loadAdminOrders();
+
+        updateLoginStatus();
+    }
+
+    function updateLoginStatus() {
+
+        const loggedIn = isLoggedIn();
+
+        document.getElementById("loginNav").style.display =
+            loggedIn ? "none" : "block";
+
+        document.getElementById("signupNav").style.display =
+            loggedIn ? "none" : "block";
+    }
+
+    window.addEventListener("load", function() {
+    updateCartCount();
+    loadProducts();
+    
+});
+window.addEventListener("hashchange", router);
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>
