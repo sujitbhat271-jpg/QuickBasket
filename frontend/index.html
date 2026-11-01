@@ -1185,7 +1185,7 @@ async function loadMyOrders() {
     try {
 
         const response = await fetch(
-            "http://127.0.0.1:3000/api/orders",
+            "/api/orders",
             {
                 credentials: "include"
             }
@@ -1325,8 +1325,8 @@ async function loadProducts() {
             container.innerHTML = `
                 <div class="col-12">
                     <div class="alert alert-danger">
-                        Could not load products. Make sure the QuickBasket
-                        backend is running at localhost:3000, then refresh.
+                        Could not load products.
+                        Please check your connection and refresh the page.
                     </div>
                     <button class="btn btn-success"
                             onclick="loadProducts()">
@@ -1765,7 +1765,7 @@ document.getElementById("paymentForm").addEventListener(
             successMessage.innerText = "";
 
             const response = await fetch(
-                "http://127.0.0.1:3000/api/orders",
+                "/api/orders",
                 {
                     method: "POST",
 
